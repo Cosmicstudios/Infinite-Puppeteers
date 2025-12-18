@@ -1,0 +1,18 @@
+{
+  "name": "service-web-backend",
+  "version": "0.1.0",
+  "description": "Backend prototype for Marketplace (adds optional Stripe integration)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "node test.js",
+    "test:categories": "node test-categories.js",
+    "test:improvements": "node test-improvements.js",
+    "test:vendor-products": "node test-vendor-products.js",
+    "e2e": "node e2e-demo.js",
+    "e2e:categories": "node e2e-categories.js"
+  },
+  "dependencies": {
+    "stripe": "^11.0.0"
+  }
+}

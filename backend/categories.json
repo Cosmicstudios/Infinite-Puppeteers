@@ -1,0 +1,184 @@
+{
+  "categories": [
+    {
+      "id": "electronics",
+      "name": "Electronics & Technology",
+      "description": "Devices, gadgets, computers, and tech accessories",
+      "icon": "📱",
+      "niches": [
+        "Smartphones & Accessories",
+        "Laptops & Computers",
+        "Tablets & E-readers",
+        "Wearable Devices",
+        "Home Automation",
+        "Gaming & Consoles",
+        "Audio & Speakers",
+        "Cameras & Photography",
+        "Smart Home Security",
+        "Networking & Storage"
+      ]
+    },
+    {
+      "id": "fashion",
+      "name": "Fashion & Apparel",
+      "description": "Clothing, shoes, accessories, and fashion items",
+      "icon": "👗",
+      "niches": [
+        "Men's Clothing",
+        "Women's Clothing",
+        "Kids & Babies",
+        "Footwear",
+        "Accessories & Jewelry",
+        "Activewear & Sports",
+        "Formal Wear",
+        "Swimwear & Beachwear",
+        "Vintage & Thrift",
+        "Luxury Fashion"
+      ]
+    },
+    {
+      "id": "home",
+      "name": "Home & Garden",
+      "description": "Furniture, decor, gardening, and home improvement",
+      "icon": "🏠",
+      "niches": [
+        "Furniture",
+        "Bedding & Linens",
+        "Kitchen & Dining",
+        "Home Decor",
+        "Gardening & Outdoor",
+        "Tools & Hardware",
+        "Lighting",
+        "Storage & Organization",
+        "Plants & Seeds",
+        "Smart Home"
+      ]
+    },
+    {
+      "id": "beauty",
+      "name": "Beauty & Personal Care",
+      "description": "Cosmetics, skincare, haircare, and wellness products",
+      "icon": "💄",
+      "niches": [
+        "Skincare",
+        "Makeup & Cosmetics",
+        "Haircare & Styling",
+        "Fragrances & Perfumes",
+        "Bath & Body",
+        "Health & Wellness",
+        "Oral Care",
+        "Men's Grooming",
+        "Supplements & Vitamins",
+        "Natural & Organic"
+      ]
+    },
+    {
+      "id": "sports",
+      "name": "Sports & Outdoors",
+      "description": "Sports equipment, outdoor gear, and fitness products",
+      "icon": "⚽",
+      "niches": [
+        "Fitness Equipment",
+        "Outdoor Gear",
+        "Team Sports",
+        "Water Sports",
+        "Cycling",
+        "Hiking & Camping",
+        "Golf",
+        "Yoga & Pilates",
+        "Martial Arts",
+        "Winter Sports"
+      ]
+    },
+    {
+      "id": "services",
+      "name": "Services & Digital",
+      "description": "Professional services, consulting, and digital products",
+      "icon": "💼",
+      "niches": [
+        "Consulting & Business",
+        "Web & App Development",
+        "Graphic & Logo Design",
+        "Writing & Content",
+        "Video & Photography Services",
+        "Marketing & Advertising",
+        "Training & Courses",
+        "IT & Tech Support",
+        "Virtual Assistance",
+        "Coaching & Mentoring"
+      ]
+    },
+    {
+      "id": "food",
+      "name": "Food & Groceries",
+      "description": "Food products, beverages, and specialty items",
+      "icon": "🍔",
+      "niches": [
+        "Organic & Natural",
+        "Specialty Foods",
+        "Beverages & Coffee",
+        "Snacks & Confectionery",
+        "Baking & Cooking",
+        "Diet & Nutrition",
+        "Artisan & Homemade",
+        "International Foods",
+        "Pet Food & Treats",
+        "Meal Kits & Prepared"
+      ]
+    },
+    {
+      "id": "books",
+      "name": "Books & Media",
+      "description": "Books, audiobooks, and digital media",
+      "icon": "📚",
+      "niches": [
+        "Fiction & Literature",
+        "Non-Fiction & Education",
+        "Self-Help & Development",
+        "Business & Finance",
+        "Children's Books",
+        "Comics & Graphic Novels",
+        "Audiobooks",
+        "E-books",
+        "Magazines & Journals",
+        "Collectibles & Rare"
+      ]
+    },
+    {
+      "id": "toys",
+      "name": "Toys & Games",
+      "description": "Toys, games, puzzles, and hobbies",
+      "icon": "🎮",
+      "niches": [
+        "Action Figures & Collectibles",
+        "Building & Construction",
+        "Board Games",
+        "Video Games",
+        "Puzzles & Brain Games",
+        "Educational Toys",
+        "Outdoor Play",
+        "Dolls & Accessories",
+        "Hobby & Model Building",
+        "Card Games"
+      ]
+    },
+    {
+      "id": "automotive",
+      "name": "Automotive & Motor",
+      "description": "Car parts, accessories, and automotive services",
+      "icon": "🚗",
+      "niches": [
+        "Car Parts & Accessories",
+        "Motorcycle Gear",
+        "Tools & Equipment",
+        "Car Care & Maintenance",
+        "Batteries & Electrical",
+        "Replacement Parts",
+        "Performance Upgrades",
+        "Tires & Wheels",
+        "Interior Accessories",
+        "Safety Equipment"
+      ]
+    }
+  ]
+}

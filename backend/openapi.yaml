@@ -1,0 +1,556 @@
+openapi: 3.0.0
+info:
+  title: Service Web Marketplace API
+  version: 1.0.0
+  description: |
+    Commission-based affiliate marketplace platform with vendor integration, product management, 
+    order processing, and admin analytics.
+  contact:
+    name: Support
+    url: https://github.com/yourusername/service-web
+
+servers:
+  - url: http://localhost:4000
+    description: Development server
+  - url: https://api.service-web.com
+    description: Production server
+
+tags:
+  - name: Auth
+  - name: Products
+  - name: Vendors
+  - name: Orders
+  - name: Categories
+  - name: Admin
+
+paths:
+  /api/health:
+    get:
+      summary: Health check
+      tags: [Health]
+      responses:
+        '200':
+          description: OK
+
+  /api/auth/register:
+    post:
+      summary: Register a new user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                role:
+                  type: string
+                  enum: [buyer, vendor, admin]
+      responses:
+        '201':
+          description: User created
+
+  /api/auth/login:
+    post:
+      summary: Login user
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+
+  /api/categories:
+    get:
+      summary: List all categories
+      tags: [Categories]
+      responses:
+        '200':
+          description: List of categories
+
+  /api/products:
+    get:
+      summary: List products (with optional filters)
+      tags: [Products]
+      parameters:
+        - name: category
+          in: query
+          schema:
+            type: string
+        - name: niche
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: List of products
+    post:
+      summary: Create product (vendor or API key)
+      tags: [Products]
+      security:
+        - BearerAuth: []
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                price:
+                  type: number
+                categoryId:
+                  type: string
+      responses:
+        '201':
+          description: Product created
+
+  /api/vendor/products/bulk:
+    post:
+      summary: Bulk import products (CSV/JSON)
+      tags: [Products]
+      security:
+        - BearerAuth: []
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                products:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '201':
+          description: Products imported
+
+  /api/vendors:
+    get:
+      summary: List vendors
+      tags: [Vendors]
+      responses:
+        '200':
+          description: List of vendors
+
+  /api/vendors/apply:
+    post:
+      summary: Apply to become a vendor
+      tags: [Vendors]
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                businessName:
+                  type: string
+      responses:
+        '201':
+          description: Application submitted
+
+  /api/vendors/{id}/generate-api-key:
+    post:
+      summary: Generate vendor API key
+      tags: [Vendors]
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+      responses:
+        '200':
+          description: API key generated
+
+  /api/admin/api-keys:
+    get:
+      summary: List all vendor API keys with metadata
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: API key metadata
+
+  /api/orders:
+    post:
+      summary: Create order
+      tags: [Orders]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                buyer:
+                  type: string
+                items:
+                  type: array
+                couponCode:
+                  type: string
+      responses:
+        '201':
+          description: Order created
+
+  /api/admin/analytics/categories:
+    get:
+      summary: Category analytics
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Category metrics
+
+  /api/admin/discount-rules:
+    get:
+      summary: List discount rules
+      tags: [Admin]
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of discount rules
+
+  /api/vendors/connect:
+    post:
+      summary: Connect external provider
+      tags: [Vendors]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                businessName:
+                  type: string
+                website:
+                  type: string
+      responses:
+        '201':
+          description: Provider connected
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+          '200':
+            description: Category object
+    /api/categories/{id}/niches:
+      get:
+        summary: Get niches for a category
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Array of niches
+    /api/niches:
+      get:
+        summary: List all niches
+        responses:
+          '200':
+            description: Niches list
+    /api/niches/{id}:
+      get:
+        summary: Get niche by ID
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: string
+        responses:
+          '200':
+            description: Niche object
+
+  /api/vendors/{id}:
+    get:
+      summary: Get vendor and their products
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+  /api/orders:
+    post:
+      summary: Create order (optionally with couponCode)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                buyer:
+                  type: string
+                items:
+                  type: array
+                  items:
+                    type: object
+                couponCode:
+                  type: string
+      responses:
+        '201':
+          description: Created
+  /api/coupons:
+    get:
+      summary: List coupons (public)
+    post:
+      summary: Create coupon (admin only)
+  /api/offers:
+    get:
+      summary: List offers
+  /api/admin/commissions/{id}/pay:
+    post:
+      summary: Mark commission as paid and create a payout (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+  /api/admin/orders:
+    get:
+      summary: List orders (admin only)
+  /api/payments/simulate:
+    post:
+      summary: Simulate payment for an order (development only)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /api/stripe/create-account:
+    post:
+      summary: Create a Stripe Connect account for the authenticated vendor (optional)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+      responses:
+        '200':
+          description: Created
+  /api/stripe/account-link:
+    post:
+      summary: Create an onboarding account link for an existing Stripe account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accountId:
+                  type: string
+                refreshUrl:
+                  type: string
+                returnUrl:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /webhooks/stripe:
+    post:
+      summary: Stripe webhook endpoint (verify signatures)
+      responses:
+        '200':
+          description: OK
+  /api/stripe/create-payment-intent:
+    post:
+      summary: Create a payment intent for an order (uses Stripe if configured)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                orderId:
+                  type: string
+      responses:
+        '200':
+          description: OK
+  /api/admin/payouts:
+    get:
+      summary: List payouts (admin only)
+  /api/admin/categories:
+    post:
+      summary: Create a category (admin only)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+                icon:
+                  type: string
+                commissionRate:
+                  type: number
+      responses:
+        '201':
+          description: Created
+  /api/admin/categories/bulk/import:
+    post:
+      summary: Bulk import categories and niches from JSON (admin only)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                categories:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                      icon:
+                        type: string
+                      commissionRate:
+                        type: number
+                      niches:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            name:
+                              type: string
+      responses:
+        '200':
+          description: OK with import count
+  /api/admin/categories/{id}:
+    put:
+      summary: Update category (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+    delete:
+      summary: Delete category (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+  /api/admin/categories/{id}/niches:
+    post:
+      summary: Create a niche under a category (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '201':
+          description: Created
+  /api/admin/niches/{id}:
+    put:
+      summary: Update niche (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+    delete:
+      summary: Delete niche (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+  /api/vendors/apply:
+    post:
+      summary: Apply as vendor (authenticated)
+  /api/admin/vendors/{id}/approve:
+    post:
+      summary: Approve vendor (admin only)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string

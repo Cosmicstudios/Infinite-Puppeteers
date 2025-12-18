@@ -1,0 +1,15 @@
+version: '3.8'
+
+# Production override for docker-compose
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+services:
+  backend:
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+    restart: always
+    # Remove volumes in production
+    volumes: []
+    # Pin image tag in production
+    image: service-web-backend:latest

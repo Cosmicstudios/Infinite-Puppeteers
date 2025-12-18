@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - Categories</title>
+  <style>
+    body{font-family:Segoe UI,Arial,sans-serif;margin:24px}
+    .list{max-width:900px}
+    .item{border:1px solid #ddd;padding:8px;margin:8px 0}
+    input,textarea{width:100%;box-sizing:border-box;margin:4px 0}
+    .row{display:flex;gap:8px}
+    .col{flex:1}
+  </style>
+</head>
+<body>
+  <h1>Admin - Categories & Niches</h1>
+  <p>Provide an admin token below to perform mutations.</p>
+  <input id="token" placeholder="Bearer token" />
+  <button id="refresh">Refresh</button>
+  <h2>Create Category</h2>
+  <div class="list">
+    <input id="catName" placeholder="Name" />
+    <input id="catId" placeholder="ID (optional)" />
+    <input id="catIcon" placeholder="Icon (emoji or text)" />
+    <input id="catCommission" placeholder="Commission rate (e.g. 0.12)" />
+    <textarea id="catDesc" placeholder="Description"></textarea>
+    <button id="createCat">Create</button>
+  </div>
+
+  <h2>Existing Categories</h2>
+  <div id="cats"></div>
+
+  <script src="/admin-categories.js"></script>
+</body>
+</html>

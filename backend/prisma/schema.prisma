@@ -1,0 +1,126 @@
+// Prisma schema for the marketplace prototype. For production use, run with
+// PostgreSQL and adjust providers accordingly.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  hash      String
+  salt      String
+  role      String   @default("buyer")
+  createdAt DateTime @default(now())
+  vendors   Vendor[]
+  orders    Order[]
+}
+
+model Vendor {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  businessName String
+  status     String   @default("pending")
+  payoutInfo String?
+  products   Product[]
+  createdAt  DateTime @default(now())
+}
+
+model Category {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  slug            String   @unique
+  icon            String?
+  commissionRate  Float    @default(0.1)
+  parentId        String?
+  parent          Category? @relation("ParentChild", fields: [parentId], references: [id])
+  children        Category[] @relation("ParentChild")
+  products        Product[]
+  niches          Niche[]
+  createdAt       DateTime @default(now())
+}
+
+model Niche {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id])
+  products    Product[]
+  createdAt   DateTime @default(now())
+}
+
+model Product {
+  id         String   @id @default(cuid())
+  vendor     Vendor   @relation(fields: [vendorId], references: [id])
+  vendorId   String
+  title      String
+  description String?
+  price      Float
+  currency   String   @default("USD")
+  category   Category? @relation(fields: [categoryId], references: [id])
+  categoryId String?
+  niche      Niche?   @relation(fields: [nicheId], references: [id])
+  nicheId    String?
+  status     String   @default("active")
+  createdAt  DateTime @default(now())
+}
+
+model Offer {
+  id         String   @id @default(cuid())
+  vendorId   String?
+  productId  String?
+  title      String
+  discountType String
+  amount     Float
+  startAt    DateTime?
+  endAt      DateTime?
+}
+
+model Coupon {
+  id         String   @id @default(cuid())
+  code       String   @unique
+  discountType String
+  amount     Float
+  usageLimit Int?
+  usedCount  Int      @default(0)
+  startAt    DateTime?
+  endAt      DateTime?
+}
+
+model Payout {
+  id          String   @id @default(cuid())
+  vendorId    String
+  commissionId String
+  amount      Float
+  status      String   @default("created")
+  createdAt   DateTime @default(now())
+}
+
+model Order {
+  id         String   @id @default(cuid())
+  buyer      User     @relation(fields: [buyerId], references: [id])
+  buyerId    String
+  subtotal   Float
+  total      Float
+  status     String   @default("created")
+  items      Json
+  createdAt  DateTime @default(now())
+}
+
+model Commission {
+  id         String   @id @default(cuid())
+  orderId    String
+  vendorId   String
+  rate       Float
+  amount     Float
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+}

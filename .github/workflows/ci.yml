@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test-suites:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        suite: [vendor-products, improvements, categories]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install backend deps
+        working-directory: backend
+        run: npm ci
+
+      - name: Start backend
+        if: matrix.suite == 'vendor-products'
+        working-directory: backend
+        run: |
+          nohup node index.js > server.log 2>&1 &
+
+      - name: Wait for server (only once)
+        if: matrix.suite == 'vendor-products'
+        run: |
+          for i in {1..30}; do
+            if curl -sS http://localhost:4000/api/health >/dev/null 2>&1; then
+              echo "server up"; exit 0; fi
+            echo "waiting..."; sleep 1;
+          done
+          cat backend/server.log || true
+          exit 1
+
+      - name: Run tests (matrix)
+        working-directory: backend
+        run: |
+          if [ "${{ matrix.suite }}" = "vendor-products" ]; then
+            npm run test:vendor-products;
+          elif [ "${{ matrix.suite }}" = "improvements" ]; then
+            npm run test:improvements;
+          else
+            npm run test:categories;
+          fi

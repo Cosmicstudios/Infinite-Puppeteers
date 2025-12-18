@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin — API Keys</title>
+  <style>body{font-family:Arial;padding:16px} table{border-collapse:collapse;width:100%} th,td{border:1px solid #ddd;padding:8px} input.small{width:140px}</style>
+</head>
+<body>
+  <h1>Admin — Vendor API Keys</h1>
+  <p>Paste an admin token to manage vendor API keys.</p>
+  <input id="token" placeholder="Admin token" style="width:60%" />
+  <button id="load">Load Vendors</button>
+  <div id="status"></div>
+  <table id="vendors" style="margin-top:12px"><thead><tr><th>Vendor ID</th><th>Business</th><th>Label</th><th>Created</th><th>Last Used</th><th>Revoked</th><th>Actions</th></tr></thead><tbody></tbody></table>
+
+  <script>
+    const status = (t) => document.getElementById('status').innerText = t;
+    async function api(path, method='GET', body=null, token=null, extra={}){
+      const headers = { 'Content-Type':'application/json', ...extra };
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+      const data = await res.json().catch(()=>null);
+      return { ok: res.ok, status: res.status, data };
+    }
+
+    function fmt(d){ if (!d) return '-'; try{ return new Date(d).toLocaleString(); }catch(e){return d} }
+
+    document.getElementById('load').onclick = async () => {
+      const token = document.getElementById('token').value.trim();
+      if (!token) return status('Token required');
+      status('Loading api key metadata...');
+      const r = await api('/api/admin/api-keys', 'GET', null, token);
+      if (!r.ok) { status('Failed to load: ' + r.status); return; }
+      const tbody = document.querySelector('#vendors tbody'); tbody.innerHTML = '';
+      (r.data || []).forEach(v => {
+        const meta = v.apiKeyMeta || {};
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${v.id}</td><td>${v.businessName||''}</td><td>${meta.label||'-'}</td><td>${fmt(meta.createdAt)}</td><td>${fmt(meta.lastUsed)}</td><td>${fmt(meta.revokedAt)}</td><td></td>`;
+        const actions = tr.querySelector('td:last-child');
+        const labelInput = document.createElement('input'); labelInput.placeholder='label'; labelInput.className='small'; labelInput.value = meta.label || '';
+        const saveBtn = document.createElement('button'); saveBtn.innerText='Save Label';
+        saveBtn.onclick = async () => {
+          status('Updating label...');
+          const rr = await api(`/api/vendors/${v.id}/api-key-label`, 'PUT', { label: labelInput.value }, token);
+          if (!rr.ok) return status('Update failed: ' + rr.status);
+          status('Label updated');
+          document.getElementById('load').click();
+        };
+        const gen = document.createElement('button'); gen.innerText='Generate';
+        gen.onclick = async () => {
+          const label = labelInput.value || undefined;
+          status('Generating API key...');
+          const rr = await api(`/api/vendors/${v.id}/generate-api-key`, 'POST', label ? { label } : null, token);
+          if (!rr.ok) return status('Generate failed: ' + rr.status);
+          alert('API key (show this once): \n' + rr.data.apiKey + '\nLabel: ' + (rr.data.label || '-'));
+          status('Generated key for ' + v.id);
+          document.getElementById('load').click();
+        };
+        const rev = document.createElement('button'); rev.innerText='Revoke';
+        rev.onclick = async () => {
+          if (!confirm('Revoke API key for ' + v.id + '?')) return;
+          status('Revoking...');
+          const rr = await api(`/api/vendors/${v.id}/revoke-api-key`, 'POST', null, token);
+          if (!rr.ok) return status('Revoke failed: ' + rr.status);
+          status('Revoked key for ' + v.id);
+          document.getElementById('load').click();
+        };
+        actions.appendChild(labelInput); actions.appendChild(saveBtn); actions.appendChild(document.createTextNode(' ')); actions.appendChild(gen); actions.appendChild(document.createTextNode(' ')); actions.appendChild(rev);
+        tbody.appendChild(tr);
+      });
+      status('Loaded ' + (r.data||[]).length + ' vendors');
+    };
+  </script>
+</body>
+</html>

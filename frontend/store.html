@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Storefront</title>
+  <style>body{font-family:Arial;padding:20px} .product{border:1px solid #ddd;padding:10px;margin:8px;border-radius:6px}</style>
+</head>
+<body>
+  <h1 id="title">Storefront</h1>
+  <div id="products"></div>
+  <script>
+    async function load() {
+      const path = location.pathname.split('/').slice(-1)[0] || '';
+      // expect URL like /store/v_demo or query ?vendor=v_demo
+      const vendorId = path.startsWith('v_') ? path : (new URLSearchParams(location.search).get('vendor') || 'v_demo');
+      document.getElementById('title').innerText = 'Storefront: ' + vendorId;
+      const res = await fetch('/api/vendors/' + vendorId);
+      if (!res.ok) { document.getElementById('products').innerText = 'Vendor not found'; return; }
+      const j = await res.json();
+      const prods = j.products || [];
+      const el = document.getElementById('products');
+      el.innerHTML = prods.map(p => `<div class="product"><strong>${p.title}</strong><div>${p.description||''}</div><div>$${(p.price||0).toFixed(2)}</div></div>`).join('');
+    }
+    load();
+  </script>
+</body>
+</html>

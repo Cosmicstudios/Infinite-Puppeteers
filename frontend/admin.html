@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin — Marketplace Prototype</title>
+    <style>body{font-family:Segoe UI,Arial,sans-serif;margin:24px} section{margin-bottom:20px} pre{background:#f7f7f7;padding:8px}</style>
+  </head>
+  <body>
+    <h1>Admin Console</h1>
+    <p>Provide an admin token to interact with admin endpoints.</p>
+    <div>
+      <input id="token" placeholder="Authorization token (Bearer ...)" style="width:60%" />
+      <button id="setToken">Set Token</button>
+    </div>
+
+    <section>
+      <h2>Vendors (approve)</h2>
+      <div id="vendors">Loading…</div>
+    </section>
+
+    <section>
+      <h2>Orders</h2>
+      <div id="orders">Loading…</div>
+    </section>
+
+    <section>
+      <h2>Commissions</h2>
+      <div id="commissions">Loading…</div>
+    </section>
+
+    <section>
+      <h2>Payouts</h2>
+      <div id="payouts">Loading…</div>
+    </section>
+
+    <script src="/admin.js"></script>
+  </body>
+</html>
